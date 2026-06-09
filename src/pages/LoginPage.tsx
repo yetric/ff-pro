@@ -58,8 +58,8 @@ export default function LoginPage() {
               </Alert>
             )}
 
-            <Input label="Email" placeholder="you@example.com" disabled />
-            <Input label="Password" placeholder="Your password" type="password" disabled />
+            <Input label="Email" placeholder="you@example.com" />
+            <Input label="Password" placeholder="Your password" type="password" />
 
             <Text style={{ fontSize: "0.75rem", color: "#6b7280" }}>
               Log in to the main Fotbollsfeber app first, then click the button below to authenticate.
