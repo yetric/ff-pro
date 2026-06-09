@@ -1,15 +1,5 @@
 import { useState } from "react";
-import {
-  Container,
-  Stack,
-  Group,
-  Select,
-  Text,
-  Table,
-  Center,
-  Loader,
-  Alert,
-} from "@yetric/ui";
+import { Select, Card, CardContent, CardHeader, CardTitle, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, Loader, Text, Box, Alert } from "@yetric/ui";
 import { useProAPI } from "../hooks/useProAPI";
 
 export default function NerdViewPage() {
@@ -21,81 +11,79 @@ export default function NerdViewPage() {
   );
 
   const rows = data?.rows?.slice(0, 10).map((row: any) => (
-    <Table.Tr key={row.teamId}>
-      <Table.Td>{row.pos}</Table.Td>
-      <Table.Td>{row.teamName}</Table.Td>
-      <Table.Td ta="center">{row.played}</Table.Td>
-      <Table.Td ta="center">{row.wins}</Table.Td>
-      <Table.Td ta="center">{row.draws}</Table.Td>
-      <Table.Td ta="center">{row.losses}</Table.Td>
-      <Table.Td ta="right" fw={600}>
+    <TableRow key={row.teamId}>
+      <TableCell>{row.pos}</TableCell>
+      <TableCell>{row.teamName}</TableCell>
+      <TableCell style={{ textAlign: "center" }}>{row.played}</TableCell>
+      <TableCell style={{ textAlign: "center" }}>{row.wins}</TableCell>
+      <TableCell style={{ textAlign: "center" }}>{row.draws}</TableCell>
+      <TableCell style={{ textAlign: "center" }}>{row.losses}</TableCell>
+      <TableCell style={{ textAlign: "right", fontWeight: 600 }}>
         {row.points}
-      </Table.Td>
-    </Table.Tr>
+      </TableCell>
+    </TableRow>
   ));
 
   return (
-    <Container size="lg">
-      <Stack gap="lg">
-        <div>
-          <Text size="xl" fw={700}>
-            Nerd View
-          </Text>
-          <Text size="sm" c="dimmed">
-            Detailed league standings and statistics
-          </Text>
+    <Box style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      <div style={{ marginBottom: "2rem" }}>
+        <Text style={{ fontSize: "1.25rem", fontWeight: 700 }}>Nerd View</Text>
+        <Text style={{ fontSize: "0.875rem", color: "#6b7280" }}>Detailed league standings and statistics</Text>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginBottom: "2rem" }}>
+        <Select
+          label="League"
+          placeholder="Select league"
+          options={[
+            { value: "allsvenskan", label: "Allsvenskan" },
+            { value: "superettan", label: "Superettan" },
+          ]}
+          value={league}
+          onChange={(v) => setLeague(v)}
+        />
+        <Select
+          label="Year"
+          placeholder="Select year"
+          options={[
+            { value: "2026", label: "2026" },
+            { value: "2025", label: "2025" },
+          ]}
+          value={year}
+          onChange={(v) => setYear(v)}
+        />
+      </div>
+
+      {error && (
+        <Alert color="red" style={{ marginBottom: "1rem" }}>
+          <Text>{error instanceof Error ? error.message : "Failed to load data"}</Text>
+        </Alert>
+      )}
+
+      {isLoading ? (
+        <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>
+          <Loader />
         </div>
-
-        <Group grow>
-          <Select
-            label="League"
-            placeholder="Select league"
-            data={[
-              { value: "allsvenskan", label: "Allsvenskan" },
-              { value: "superettan", label: "Superettan" },
-            ]}
-            value={league}
-            onChange={(v) => setLeague(v || "allsvenskan")}
-          />
-          <Select
-            label="Year"
-            placeholder="Select year"
-            data={[
-              { value: "2026", label: "2026" },
-              { value: "2025", label: "2025" },
-            ]}
-            value={year}
-            onChange={(v) => setYear(v || "2026")}
-          />
-        </Group>
-
-        {error && (
-          <Alert color="red" title="Error">
-            {error instanceof Error ? error.message : "Failed to load data"}
-          </Alert>
-        )}
-
-        {isLoading ? (
-          <Center h={300}>
-            <Loader />
-          </Center>
-        ) : (
-          <Table striped highlightOnHover>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>#</Table.Th>
-                <Table.Th>Team</Table.Th>
-                <Table.Th ta="center">S</Table.Th>
-                <Table.Th ta="center">V</Table.Th>
-                <Table.Th ta="center">O</Table.Th>
-                <Table.Th ta="center">F</Table.Th>
-                <Table.Th ta="right">Pts</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>{rows}</Table.Tbody>
-          </Table>
-        )}
-      </Stack>
-    </Container>
+      ) : (
+        <Card>
+          <CardContent style={{ padding: 0 }}>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>#</TableHead>
+                  <TableHead>Team</TableHead>
+                  <TableHead style={{ textAlign: "center" }}>S</TableHead>
+                  <TableHead style={{ textAlign: "center" }}>V</TableHead>
+                  <TableHead style={{ textAlign: "center" }}>O</TableHead>
+                  <TableHead style={{ textAlign: "center" }}>F</TableHead>
+                  <TableHead style={{ textAlign: "right" }}>Pts</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>{rows}</TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
+    </Box>
   );
 }
