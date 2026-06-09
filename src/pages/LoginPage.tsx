@@ -65,8 +65,8 @@ export default function LoginPage() {
               Log in to the main Fotbollsfeber app first, then click the button below to authenticate.
             </Text>
 
-            <Button type="submit" loading={isLoading}>
-              Authenticate with Pro Token
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Authenticating..." : "Authenticate with Pro Token"}
             </Button>
           </form>
 
