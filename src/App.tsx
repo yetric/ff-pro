@@ -5,6 +5,7 @@ import "@yetric/ui/styles";
 import { useAuthStore } from "./hooks/useProAuth";
 import Layout from "./components/Layout";
 import LoginPage from "./pages/LoginPage";
+import AuthCallbackPage from "./pages/AuthCallbackPage";
 import DashboardPage from "./pages/DashboardPage";
 import NerdViewPage from "./pages/NerdViewPage";
 import "./App.css";
@@ -26,6 +27,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/auth/callback" element={<AuthCallbackPage />} />
 
           <Route
             element={

@@ -1,44 +1,19 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Input, Card, CardContent, CardHeader, CardTitle, Alert, Text } from "@yetric/ui";
-import { useAuthStore } from "../hooks/useProAuth";
+import { Button, Card, CardContent, CardHeader, CardTitle, Text, Alert } from "@yetric/ui";
+import { useSearchParams } from "react-router-dom";
 
 export default function LoginPage() {
-  const navigate = useNavigate();
-  const login = useAuthStore((state) => state.login);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [searchParams] = useSearchParams();
+  const error = searchParams.get("error");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
+  const handleLogin = () => {
+    const redirectUri = `${window.location.origin}/auth/callback`;
+    const state = Math.random().toString(36).substring(7);
 
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/auth/token`,
-        {
-          method: "POST",
-          credentials: "include",
-        }
-      );
+    // Store state in sessionStorage for verification
+    sessionStorage.setItem("oauth_state", state);
 
-      if (!response.ok) {
-        throw new Error("Failed to authenticate");
-      }
-
-      const data = await response.json();
-      login(data);
-      navigate("/");
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Authentication failed. Make sure you're logged in to the main app."
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    // Redirect to main app login with callback URL
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL.replace("/api/pro", "")}/auth/pro?redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
   };
 
   return (
@@ -51,28 +26,25 @@ export default function LoginPage() {
           </Text>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
             {error && (
               <Alert color="red">
                 <Text>{error}</Text>
               </Alert>
             )}
 
-            <Input label="Email" placeholder="you@example.com" />
-            <Input label="Password" placeholder="Your password" type="password" />
-
-            <Text style={{ fontSize: "0.75rem", color: "#6b7280" }}>
-              Log in to the main Fotbollsfeber app first, then click the button below to authenticate.
+            <Text style={{ fontSize: "0.875rem", color: "#6b7280" }}>
+              Sign in with your Fotbollsfeber account to access FF Pro.
             </Text>
 
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Authenticating..." : "Authenticate with Pro Token"}
+            <Button onClick={handleLogin} style={{ width: "100%" }}>
+              Login with Fotbollsfeber
             </Button>
-          </form>
 
-          <Text style={{ fontSize: "0.75rem", color: "#6b7280", textAlign: "center", marginTop: "1rem" }}>
-            You must have an active Pro subscription to access this app.
-          </Text>
+            <Text style={{ fontSize: "0.75rem", color: "#6b7280", textAlign: "center" }}>
+              You must have an active Pro subscription to access this app.
+            </Text>
+          </div>
         </CardContent>
       </Card>
     </div>
