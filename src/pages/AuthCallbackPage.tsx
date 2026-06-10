@@ -14,8 +14,8 @@ export default function AuthCallbackPage() {
     const error = searchParams.get("error");
 
     // Check state for CSRF protection
-    const storedState = sessionStorage.getItem("oauth_state");
-    sessionStorage.removeItem("oauth_state");
+    const storedState = localStorage.getItem("oauth_state");
+    localStorage.removeItem("oauth_state");
 
     if (error) {
       navigate(`/login?error=${encodeURIComponent(error)}`);

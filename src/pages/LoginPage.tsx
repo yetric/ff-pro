@@ -9,8 +9,8 @@ export default function LoginPage() {
     const redirectUri = `${window.location.origin}/auth/callback`;
     const state = Math.random().toString(36).substring(7);
 
-    // Store state in sessionStorage for verification
-    sessionStorage.setItem("oauth_state", state);
+    // Store state in localStorage for verification
+    localStorage.setItem("oauth_state", state);
 
     // Redirect to main app login with callback URL
     window.location.href = `${import.meta.env.VITE_API_BASE_URL.replace("/api/pro", "")}/api/auth/pro?redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
