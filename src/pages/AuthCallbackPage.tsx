@@ -25,10 +25,16 @@ export default function AuthCallbackPage() {
       return;
     }
 
-    // Parse token (format: {token, expiresAt, tier})
+    // Token is base64-encoded JSON, decode it to verify format
     try {
       const tokenData = JSON.parse(atob(token));
-      login(tokenData);
+
+      // Store the original base64 token string, not the parsed data
+      login({
+        token: token, // Store the base64 string itself
+        expiresAt: tokenData.expiresAt,
+        tier: tokenData.tier,
+      });
       navigate("/");
     } catch (err) {
       navigate("/login?error=Invalid token format");
