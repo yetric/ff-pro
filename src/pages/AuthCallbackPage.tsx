@@ -10,11 +10,9 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     const token = searchParams.get("token");
-    const state = searchParams.get("state");
     const error = searchParams.get("error");
 
-    // Check state for CSRF protection
-    const storedState = localStorage.getItem("oauth_state");
+    // Clear state from localStorage
     localStorage.removeItem("oauth_state");
 
     if (error) {
@@ -24,11 +22,6 @@ export default function AuthCallbackPage() {
 
     if (!token) {
       navigate("/login?error=No token received");
-      return;
-    }
-
-    if (state !== storedState) {
-      navigate("/login?error=Invalid state parameter");
       return;
     }
 
